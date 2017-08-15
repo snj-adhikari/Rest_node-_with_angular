@@ -1,0 +1,168 @@
+    <script src="../assets/js/jquery-ui.js"></script>
+    <script src="../assets/js/dropzone.js"></script>  
+    <script src="../js/newUser.js"> </script> 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    
+    <script src="../js/geocoder.js"></script>
+    <style type="text/css">
+        .dz-details , .dz-success-mark, .dz-error-mark {
+            display: none;
+        }
+        .dropzone .dz-preview .dz-remove {
+            margin-top: 10%;
+            margin-left: 20%;
+        }
+        .map_canvas { 
+          width: 100%; 
+          height: 400px; 
+          margin: 10px 20px 10px 0;
+        }
+    </style>
+    <div class="container-fluid">
+     <h1 class="{{class}}"> {{message}} </h1>
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="card card-user">
+                   <form action="../upload.php" class="dropzone"  id="photoupload">
+                       <div class="dz-message" data-dz-message><span>Upload your image</span></div>
+                   </form>
+                </div>    
+            </div>
+            <div class="col-lg-7 col-md-6">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Submit Authority</h4>
+                    </div>
+                    <div class="content">
+                        <form ng-submit="submit(auth)">
+                            <input type="text"  name="lat"  class="form-control" ng-model="auth.lat"  style="display:none"  ng-required="true">
+                            <input type="text"  name="lng" class="form-control"  ng-model="auth.lng" style="display:none"   ng-required="true">
+                            <input type="text"  id="authlogo"  class="form-control" ng-model="auth.profilepic"  style="display:none" value=""  />
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Organization Name</label>
+                                        <input type="text"  ng-model="auth.name" class="form-control border-input"  placeholder="Authority Name"  ng-required="true">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label> Authority Type </label>
+                                    <select class="form-control" ng-model="auth.auth_type" ng-required="true">
+                                        <option value="" selected disabled> Select organization Type </option>
+                                        <option value="v_authority"> Verifying Authority </option>
+                                        <option value="r_authority"> Issuing Authority </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row section">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class=" phones ">
+                                            <label>Phone Number</label>
+                                            <div class="singleitem  col-md-12" ng-repeat="phone in phones track by $index">
+                                                <div class="form-group col-md-8 " id="phgroup-{{index}}" >
+                                                    <input type="number" m ng-model="auth.phone[$index]"  id='phone-{{$index}}' min="9999999" max="9999999999" class="form-control" placeholder="ex:981234442"   ng-required="true">
+
+                                                </div>
+                                                <div class="remove-btn col-md-4 " id="phremove-{{$index}}"><a href="#" class=' btn btn-danger ' ng-click="delPhone($index)">Remove</a></div>
+                                            </div>
+                                        </div>
+                                        <div class="add-btn"><a href="#" class=' btn btn-success' ng-click="addPhone()">Add</a></div>
+                                        <div class="clearfix"></div> 
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class=" emails" >
+                                            <label>Email</label>
+                                            <div class="singleitem  col-md-12" ng-repeat="email in emails track by $index">
+                                                <div class="form-group col-md-8" id="egroup-{{$index}}">
+                                                    
+                                                    <input type="email" ng-model="auth.email[$index]" id='email-{{$index}}' class="form-control" placeholder="something@something.com" value="" ng-required="true">
+                                                </div>
+                                                <div class="remove-btn col-md-4 removecontact" id="remEmail-{{$index}}"><a href="#" class='btn btn-danger' ng-click="delEmail($index)">Remove</a></div>
+                                            </div>
+                                        </div>
+                                        <div class="add-btn"><a href="#" ng-click="addEmail()" class=' btn btn-success'>Add</a></div>
+                                        <div class="clearfix"></div> 
+                                    </div>  
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label>Address</label>
+                                       </div>
+                                       <div class="col-md-10">
+                                            <div class="form-group">
+                                                <input id="geocomplete"   ng-model="auth.address"    class="form-control border-input" placeholder="Authority Address" value="Chabahil, Kathmandu, Central Development Region, Nepal"  ng-model="location" ng-required="true"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <input id="find" type="button" class="btn btn-info" value="find" />
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                   
+          
+                                    <div class="map_canvas"></div>
+                                   
+                                </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea rows="5"  ng-model="auth.description" class="form-control border-input" placeholder="Here can be authority description" ng-required="true"></textarea >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit"  id="create_auth" class="btn btn-info btn-fill btn-wd">Create Authority</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+   
+    
+    <script>
+
+      $(function(){
+        $("#geocomplete").geocomplete({
+          map: ".map_canvas",
+          details: "form ",
+          markerOptions: {
+            draggable: true,
+          },
+          country: 'np'
+        });
+
+        
+        $("#geocomplete").bind("geocode:dragged", function(event, latLng){
+          $("input[name=lat]").val(latLng.lat());
+          $("input[name=lng]").val(latLng.lng());
+          $("#reset").show();
+        });
+        
+        
+        $("#reset").click(function(){
+          $("#geocomplete").geocomplete("resetMarker");
+          $("#reset").hide();
+          return false;
+        });
+        
+        $("#find").click(function(){
+          var input = $("#geocomplete");
+          input.trigger("geocode");
+        }).click();
+      });
+    </script>
+
+     

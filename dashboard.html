@@ -1,0 +1,107 @@
+<div class="container-fluid">
+    <div class="row">
+		<div class="col-md-6">
+          <div class="card">
+                <div class="header">
+                  <div class="col-md-6">
+                    <h4 class="title">Pending Request</h4>
+                    <p class="category">New authority requests</p>
+                  </div>
+                    <div class="form-group col-md-6">
+						<input type="text" ng-model="search_auth" class="form-control border-input" placeholder="Search">
+					</div>
+                </div>
+                <div class="content table-responsive table-full-width">
+                    <table class="table table-striped">
+                        <thead>
+                        	<th ng-click="sort('name')">Name
+								<span class="" ng-show="sortKey=='name'" ng-class="{'ti-arrow-up':reverse,'ti-arrow-down':!reverse}"></span>
+							</th>
+							<th ng-click="sort('address')">Address
+								<span class="" ng-show="sortKey=='address'"  ng-class="{'ti-arrow-up':reverse,'ti-arrow-down':!reverse}"></span>
+							</th>
+							<th ng-click="sort('status')">Status 
+								<span class="" ng-show="sortKey=='status'"  ng-class="{'ti-arrow-up':reverse,'ti-arrow-down':!reverse}"></span>
+							
+							
+                        </thead>
+                        <tbody>
+                            <tr dir-paginate="auth in auths|orderBy:sortKey:reverse|filter:search_auth|itemsPerPage:7" pagination-id="auth">
+								<td class="title"><a href="view"  ng-click="setUserId(auth.userId)" title="View /Edit">{{auth.name}} </a></td>
+								<td class="category">{{auth.address}}</td>
+								<td class="">{{auth.status}} </td>
+                                
+                                 
+							</tr>
+						    <tr>
+						    	{{not_found}}
+						    </tr>
+                            
+                        </tbody>
+                    </table>
+                    <div class="col-md-6 col-md-push-3">
+	                    <dir-pagination-controls
+							max-size="5"
+							direction-links="true"
+							boundary-links="true" 
+							pagination-id="auth"
+							>
+						</dir-pagination-controls>
+					</div>
+                </div>
+            </div>
+		</div>
+		<div class="col-md-6">
+          <div class="card">
+                <div class="header">
+                  <div class="col-md-6">
+                    <h4 class="title">Aura Users</h4>
+                    <p class="category">All available users</p>
+                  </div>
+                    <div class="form-group col-md-6">
+						<input type="text" ng-model="search_user" class="form-control border-input" placeholder="Search">
+					</div>
+                </div>
+                <div class="content table-responsive table-full-width">
+                    <table class="table table-striped">
+                        <thead>
+                        	<th ng-click="sort('username')">Username
+								<span class="" ng-show="sortKey=='username'" ng-class="{'ti-arrow-up':reverse,'ti-arrow-down':!reverse}"></span>
+							</th>
+							<th ng-click="sort('role')">Role
+								<span class="" ng-show="sortKey=='role'"  ng-class="{'ti-arrow-up':reverse,'ti-arrow-down':!reverse}"></span>
+							</th>
+							<th ng-click="sort('last_login')">Last Login
+								<span class="" ng-show="sortKey=='last_login'"  ng-class="{'ti-arrow-up':reverse,'ti-arrow-down':!reverse}"></span>
+							<th ng-click="sort('status')">Status
+								<span class="" ng-show="sortKey=='status'"  ng-class="{'ti-arrow-up':reverse,'ti-arrow-down':!reverse}"></span>
+							</th>
+							
+                        </thead>
+                        <tbody>
+                            <tr dir-paginate="user in users|orderBy:sortKey:reverse|filter:search_user|itemsPerPage:8" pagination-id="user">
+								<td class="title"><!-- <a href="view"  ng-click="setUserId(user._id)" title="View / Edit"> -->
+								{{user.username}} <!-- </a> --></td>
+								<td class="">{{user.role}}</td>
+								<td class="category">{{user.last_login}} </td>
+								<td class="">{{user.status}}</td>        
+							</tr>
+						    <tr>
+						    	{{not_found}}
+						    </tr>
+                            
+                        </tbody>
+                    </table>
+                    <div class="col-md-6 col-md-push-3">
+	                    <dir-pagination-controls
+							max-size="5"
+							direction-links="true"
+							boundary-links="true"
+							pagination-id="user" >
+						</dir-pagination-controls>
+					</div>
+                </div>
+            </div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,183 @@
+    <script src="../assets/js/jquery-ui.js"></script>
+    <script src="../assets/js/dropzone.js"></script>  
+    <script src="../js/newUser.js"> </script> 
+    <script src="../js/1.7.1-jquery.min.js"></script>
+    
+    <script src="../js/geocoder.js"></script>
+    <style type="text/css">
+        .dz-details , .dz-success-mark, .dz-error-mark {
+            display: none;
+        }
+        .dropzone .dz-preview .dz-remove {
+            margin-top: 10%;
+            margin-left: 20%;
+        }
+        .map_canvas { 
+          width: 100%; 
+          height: 400px; 
+          margin: 10px 20px 10px 0;
+        }
+    </style>
+    <div class="container-fluid " ng-init="editToggle=false">
+     <div class="row">
+        <h1 class="pull-left headbtn">
+            <a class="btn btn-success" title="back" href="/auraweb/dashboard">
+                <i class="ti-arrow-left"></i>
+            </a>
+        </h1>
+        <h1 class="pull-right headbtn">
+            <button class="btn btn-danger" title="Reject" ng-click="remove()">
+                <i class="ti-close"></i>
+            </button>
+        </h1>
+        <h1 class="headbtn {{class}}"> {{message}} </h1>
+
+     </div>
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <div class="card card-user" ng-disabled="!editToggle">
+                   <form action="../upload.php" class="dropzone"  id="photoupload" >
+                       <div class="dz-message" data-dz-message><span>click to change image</span></div>
+                       <div class="dz-preview dz-processing dz-success dz-complete dz-image-preview">   <div class="dz-image"><img data-dz-thumbnail="" alt="" src="{{image}}"></div>  <a class="dz-remove btn btn-success" href="javascript:undefined;" data-dz-remove="" ng-disabled="!editToggle" >Remove file</a></div>
+                   </form>
+                </div> 
+            </div>
+            <div class="col-lg-7 col-md-6">
+                <div class="card">
+                    <div class="header">
+                        <h4 class="title">Review Authority</h4>
+                        <label class="category">Enable Edit: <input type="checkbox" ng-model="editToggle"></label>
+                    </div>
+                    <div class="content" >
+                        <form ng-submit="submit(auth)">
+                            <input type="text"  name="lat"  class="form-control" ng-model="auth.lat"  style="display:none"  ng-required="true" ng-disabled="!editToggle" >
+                            <input type="text"  name="lng" class="form-control"  ng-model="auth.lng" style="display:none"   ng-required="true" ng-disabled="!editToggle" >
+                            <input type="text"  id="authlogo"  class="form-control" ng-model="auth.profilepic"  style="display:none" value=""   ng-disabled="!editToggle"/>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label>Organization Name</label>
+                                        <input type="text"  ng-model="auth.name" class="form-control border-input"  placeholder="Authority Name"  ng-required="true" ng-disabled="!editToggle">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label> Authority Type </label>
+                                    <select class="form-control" ng-model="auth.auth_type" ng-required="true" >
+                                        <option value="" selected ng-disabled="!editToggle"> Select organization Type </option>
+                                        <option value="v_authority"> Verifying Authority </option>
+                                        <option value="r_authority"> Issuing Authority </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row section">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class=" phones ">
+                                            <label>Phone Number</label>
+                                            <div class="singleitem  col-md-12" ng-repeat="phone in phones track by $index">
+                                                <div class="form-group col-md-8 " id="phgroup-{{index}}" >
+                                                    <input type="number" ng-model="auth.phone[$index]"  id='phone-{{$index}}' min="999999" max="9999999999" class="form-control" placeholder="ex:981234442" value="{{phone}}"  ng-required="true" ng-disabled="!editToggle">
+
+                                                </div>
+                                                <div class="remove-btn col-md-4 " id="phremove-{{$index}}"><a href="#" class=' btn btn-danger ' ng-click="delPhone($index)" ng-disabled="!editToggle">Remove</a></div>
+                                            </div>
+                                        </div>
+                                        <div class="add-btn"><a href="#" class=' btn btn-success' ng-click="addPhone()" ng-disabled="!editToggle">Add</a></div>
+                                        <div class="clearfix"></div> 
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class=" emails" >
+                                            <label>Email</label>
+                                            <div class="singleitem  col-md-12" ng-repeat="email in emails track by $index">
+                                                <div class="form-group col-md-8" id="egroup-{{$index}}">
+                                                    
+                                                    <input type="email" ng-model="auth.email[$index]" id='email-{{$index}}' class="form-control" placeholder="something@something.com" value="{{email}}" ng-required="true" ng-disabled="!editToggle">
+                                                </div>
+                                                <div class="remove-btn col-md-4 removecontact" id="remEmail-{{$index}}"><a href="#" class='btn btn-danger' ng-click="delEmail($index)" ng-disabled="!editToggle">Remove</a></div>
+                                            </div>
+                                        </div>
+                                        <div class="add-btn"><a href="#" ng-click="addEmail()" class=' btn btn-success' ng-disabled="!editToggle">Add</a></div>
+                                        <div class="clearfix"></div> 
+                                    </div>  
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <label>Address</label>
+                                       </div>
+                                       <div class="col-md-10">
+                                            <div class="form-group">
+                                                <input id="geocomplete"   ng-model="auth.address"    class="form-control border-input" placeholder="{{location}}" value="{{location}}"   ng-required="true" ng-disabled="!editToggle"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <input id="find" type="button" class="btn btn-info" value="find" ng-disabled="!editToggle" />
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                   
+          
+                                    <div class="map_canvas"></div>
+                                   
+                                </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea rows="5"  ng-model="auth.description" class="form-control border-input" placeholder="Here can be authority description" ng-required="true" ng-disabled="!editToggle"></textarea >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit"  id="create_auth" class="btn btn-info btn-fill btn-wd">Verify</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+   
+    
+    <script>
+
+      $(function(){
+        $("#geocomplete").geocomplete({
+          map: ".map_canvas",
+          details: "form ",
+          markerOptions: {
+            draggable: true,
+          },
+          country: 'np'
+        });
+
+        
+        $("#geocomplete").bind("geocode:dragged", function(event, latLng){
+          $("input[name=lat]").val(latLng.lat());
+          $("input[name=lng]").val(latLng.lng());
+          $("#reset").show();
+        });
+        
+        
+        $("#reset").click(function(){
+          $("#geocomplete").geocomplete("resetMarker");
+          $("#reset").hide();
+          return false;
+        });
+        
+        $("#find").click(function(){
+          var input = $("#geocomplete");
+          input.trigger("geocode");
+        }).click();
+      });
+    </script>
+
+     
